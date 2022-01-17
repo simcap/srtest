@@ -13,15 +13,18 @@ type node struct {
 func (t *tree) Height() int { return t.height }
 
 func (t *tree) Root() string {
-	if t != nil && t.root != nil {
+	if t.root != nil {
 		return t.root.hash
 	}
 	return ""
 }
 
 func (t *tree) Level(index int) (hashes []string) {
-	var level int
+	if index < 0 || index > t.height || t.root == nil {
+		return
+	}
 
+	var level int
 	nodes := []*node{t.root}
 
 	for level < index {

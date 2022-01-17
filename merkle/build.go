@@ -6,6 +6,10 @@ import (
 )
 
 func BuildTree(data ...string) *tree {
+	if len(data) == 0 {
+		return new(tree)
+	}
+
 	var nodes []*node
 	for _, d := range data {
 		nodes = append(nodes, &node{hash: shasum(d)})

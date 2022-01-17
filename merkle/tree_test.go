@@ -18,9 +18,36 @@ func TestLevel(t *testing.T) {
 	assert(tree.Level(0), "bfdc3a56f1351828c94fe5bcf68a091abe468f6edf85bf3edbc0d083fbc1f037")
 	assert(tree.Level(1), "88c0d7257704a0e77a3725c3161eac2653fc5ee10fca9f63c9d0bd62c31ce410", "117859a7e70956f9b77a6511a6170155efb17cf630d4bcee82c65896bd6edfa3")
 	assert(tree.Level(2), "28cebd73182082c77a65a23f4b30fdf81bc7f6af1a9d504ce7c8d1e22f847de9", "7b1dda0e7b4524eae7432b56994fff094891c48d660a1f314b7ec14f611acaf4", "77805cd60afed8a6f4b5f6e404ecdade9395d0e5e16ef815e3e9584329edb422", "faba64f502ac5bd7644b8a2601cc7d2d4078cc6acd7035b25a66066787de3373")
+
+	t.Run("return empty list", func(t *testing.T) {
+		t.Run("when given index incompatible with tree height", func(t *testing.T) {
+			hashes := tree.Level(3)
+			if len(hashes) != 0 {
+				t.Fatalf("expected empty but got %v", hashes)
+			}
+		})
+		t.Run("when given index is invalid", func(t *testing.T) {
+			hashes := tree.Level(-1)
+			if len(hashes) != 0 {
+				t.Fatalf("expected empty but got %v", hashes)
+			}
+		})
+		t.Run("for empty tree", func(t *testing.T) {
+			assert(merkle.BuildTree().Level(0))
+		})
+	})
 }
 
 func TestBuildTree(t *testing.T) {
+	t.Run("return empty tree from empty data", func(t *testing.T) {
+		tree := merkle.BuildTree()
+		if got, want := tree.Height(), 0; got != want {
+			t.Fatalf("got %v, want %v", got, want)
+		}
+		if tree.Root() != "" {
+			t.Fatal("expected empty tree hash root")
+		}
+	})
 
 	t.Run("with valid root hash and height", func(t *testing.T) {
 		cases := []struct {
