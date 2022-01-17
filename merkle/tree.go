@@ -18,3 +18,29 @@ func (t *tree) Root() string {
 	}
 	return ""
 }
+
+func (t *tree) Level(index int) (hashes []string) {
+	var level int
+
+	nodes := []*node{t.root}
+
+	for level < index {
+		var tmp []*node
+		for _, n := range nodes {
+			if n.left != nil {
+				tmp = append(tmp, n.left)
+			}
+			if n.right != nil {
+				tmp = append(tmp, n.right)
+			}
+		}
+		nodes = tmp
+		level++
+	}
+
+	for _, n := range nodes {
+		hashes = append(hashes, n.hash)
+	}
+
+	return
+}

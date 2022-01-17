@@ -17,9 +17,9 @@ func BuildTree(data ...string) *tree {
 		for i := 0; i < len(nodes); i = i + 2 {
 			var n *node
 			if len(nodes) > i+1 {
-				n = buildParent(nodes[i].hash, nodes[i+1].hash)
+				n = buildParent(nodes[i], nodes[i+1])
 			} else {
-				n = buildParent(nodes[i].hash, "")
+				n = buildParent(nodes[i], nil)
 			}
 			reduced = append(reduced, n)
 		}
@@ -33,18 +33,18 @@ func BuildTree(data ...string) *tree {
 	}
 }
 
-func buildParent(hashL, hashR string) *node {
-	if hashR == "" {
+func buildParent(nodeL, nodeR *node) *node {
+	if nodeR == nil {
 		return &node{
-			left: &node{hash: hashL},
-			hash: hashL,
+			left: nodeL,
+			hash: nodeL.hash,
 		}
 	}
 
 	return &node{
-		left:  &node{hash: hashL},
-		right: &node{hash: hashR},
-		hash:  shasum(fmt.Sprintf("%s%s", hashL, hashR)),
+		left:  nodeL,
+		right: nodeR,
+		hash:  shasum(fmt.Sprintf("%s%s", nodeL.hash, nodeR.hash)),
 	}
 }
 
